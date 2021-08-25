@@ -1,25 +1,26 @@
 import getAttendance, { attParams } from "./utils/getAttendance";
+import orderByName from "./utils/orderByName";
 
 const filePath = './zoom.txt';
 
 const consulta:attParams = {
     filePath,
     buscar: 'presente',
-    horaInicio: '18:10:20',
+    horaInicio: '18:13:00',
     horaFinal: '18:20:00'
 }
 
 const { success, results } = getAttendance(consulta);
 
-if (!success) {
+if (!success || !results) {
     console.error("No se encontraron resultados o el archivo no existe.");
     process.exit(1);
 }
 console.log('Se encontraron resultados:');
-// TODO: sort opcional
-// results?.sort(({nombre:a},{nombre:b}) => { return a.localeCompare(b) });
+// Sort opcional
+const filtered = orderByName(results);
 console.log('Total de:', results?.length);
 console.log('-----');
-console.log(results);
+console.log(filtered);
 process.exit(0);
 

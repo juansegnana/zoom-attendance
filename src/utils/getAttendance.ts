@@ -19,14 +19,14 @@ export interface attParams {
     /**
      * Desde que hora aceptar. Ejemplo: 12:20:00
     */
-   horaInicio?: hoursAllowed | false;
-   /**
-    * Desde que hora NO aceptar. Ejemplo: 12:40:00
-   */
+    horaInicio?: hoursAllowed | false;
+    /**
+     * Desde que hora NO aceptar. Ejemplo: 12:40:00
+    */
     horaFinal?: hoursAllowed | false;
 };
 
-interface presentes {
+export interface presentes {
     hora: string;
     nombre: string;
     mensaje: string;
@@ -54,32 +54,34 @@ const getAttendance = ({ filePath, buscar, horaInicio, horaFinal }: attParams): 
     let matches = text.matchAll(zoomExp);
     const presentes = [];
 
+    /*
+        continue: saltea a la sig. iteración. Más info:
+        https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/continue
+    */
     for (const match of matches) {
 
         const hora = match[1];
         const nombre = match[2].trim();
         const mensaje = match[3].trim();
-        let aceptar = true;
 
         if (horaInicio) {
             // Caso: quiero los presentes desde las 10.
             // Si el mensaje fue enviado antes de las 10, no aceptar.
             // Ej. desde 10... | mensaje 9...
-            (horaInicio > hora) && (aceptar = false);
+            if (horaInicio > hora) continue;
         }
         if (horaFinal) {
             // Caso: quiero los presentes hasta las 10.
             // Si el mensaje fue enviado desde de las 10 inclusive, no aceptar.
             // Ej. (10(horaFinal) < 9(horaActual)) ? NoAceptar : aceptar. 
-            (horaFinal <= hora) && (aceptar = false);
+            if (horaFinal <= hora) continue;
         }
-        if (aceptar) {
-            presentes.push({
-                hora,
-                nombre,
-                mensaje
-            });
-        };
+
+        presentes.push({
+            hora,
+            nombre,
+            mensaje
+        });
 
     };
 
