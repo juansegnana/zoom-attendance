@@ -15,7 +15,7 @@ export interface attParams {
     /**
      * Palabra o frase a buscar
     */
-    buscar?: string | 'presente';
+    buscar?: string;
     /**
      * Desde que hora aceptar. Ejemplo: 12:20:00
     */
@@ -24,6 +24,10 @@ export interface attParams {
      * Desde que hora NO aceptar. Ejemplo: 12:40:00
     */
     horaFinal?: hoursAllowed | false;
+    /**
+     * Sacar numeros y guiones.
+    */
+    limpiarNombre?: boolean | true;
 };
 
 export interface presentes {
@@ -37,7 +41,14 @@ interface attendance {
     results?: presentes[];
 };
 
-const getAttendance = ({ filePath, buscar, horaInicio, horaFinal }: attParams): attendance => {
+const getAttendance = ({
+    filePath,
+    buscar = 'presente',
+    horaInicio,
+    horaFinal,
+    limpiarNombre = true
+}: attParams): attendance => {
+
     let success = true;
     let text: string;
     try {
@@ -48,7 +59,7 @@ const getAttendance = ({ filePath, buscar, horaInicio, horaFinal }: attParams): 
         return { success };
     }
 
-    const expression = `((?:\\d{2}:?){3})\\W(?:de)\\W*((?:.(?!\\b[a]\\b))+).*(?:a).*\\W*(${buscar})`;
+    const expression = `((?:\\d{2}:?){3})\\W(?:de)\\W*((?:.)+).*(?:a\\W+todos:).*\\W*(${buscar})`;
     const zoomExp: RegExp = new RegExp(expression, 'gi');
 
     let matches = text.matchAll(zoomExp);
@@ -61,6 +72,10 @@ const getAttendance = ({ filePath, buscar, horaInicio, horaFinal }: attParams): 
     for (const match of matches) {
 
         const hora = match[1];
+        const replaceSymbols = /[\d-_]/g;
+        if (limpiarNombre) {
+            match[2] = match[2].replaceAll(replaceSymbols, '');
+        }
         const nombre = match[2].trim();
         const mensaje = match[3].trim();
 

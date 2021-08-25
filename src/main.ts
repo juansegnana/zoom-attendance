@@ -6,8 +6,9 @@ const filePath = './zoom.txt';
 const consulta:attParams = {
     filePath,
     buscar: 'presente',
-    horaInicio: '18:13:00',
-    horaFinal: '18:20:00'
+    // horaInicio: '18:11:58',
+    // horaFinal: '18:12:05',
+    // limpiarNombre: false
 }
 
 const { success, results } = getAttendance(consulta);
@@ -18,9 +19,9 @@ if (!success || !results) {
 }
 console.log('Se encontraron resultados:');
 // Sort opcional
-const filtered = orderByName(results);
+// const filtered = orderByName(results);
 console.log('Total de:', results?.length);
 console.log('-----');
-console.log(filtered);
+console.log(results);
 process.exit(0);
 
