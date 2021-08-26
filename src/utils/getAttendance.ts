@@ -1,69 +1,67 @@
-import { readFileSync } from 'fs';
+import { languages } from "./languages";
 
-type minsec = number;
+type minutesAndSeconds = number;
 type hours = number;
-type hoursAllowed = `${hours}:${minsec}:${minsec}`;
+type allowedHours = `${hours}:${minutesAndSeconds}:${minutesAndSeconds}`;
 
 /**
- * Leer archivo y buscar según el mensaje que tuvo que dar el usuario.
+ * Receives an string (meant to be a Zoom Meeting chat), looks for
+ * users who said "here", or the message to look for.
 */
 export interface attParams {
     /**
-     * Ruta del archivo
+     * String to analize.
     */
-    filePath: string;
+    text: string;
     /**
-     * Palabra o frase a buscar
+     * Language that chat is in. By default: es (Spanish)
     */
-    buscar?: string;
+    language?: 'es' | 'en';
     /**
-     * Desde que hora aceptar. Ejemplo: 12:20:00
+     * Keyword to search for. Example: "here"
     */
-    horaInicio?: hoursAllowed | false;
+    searchFor?: string;
     /**
-     * Desde que hora NO aceptar. Ejemplo: 12:40:00
+     * Initial hour to allow attendance message. E.g.: 12:20:00
     */
-    horaFinal?: hoursAllowed | false;
+    initalHour?: allowedHours | false;
     /**
-     * Sacar numeros y guiones.
+     * Final hour to stop allowing attendance message. E.g.: 12:40:00
     */
-    limpiarNombre?: boolean | true;
+    finalHour?: allowedHours | false;
+    /**
+     * Delete numbers, dash and underscore. By default: true
+    */
+    cleanName?: boolean;
 };
 
-export interface presentes {
-    hora: string;
-    nombre: string;
-    mensaje: string;
+export interface presents {
+    hour: string;
+    name: string;
+    message: string;
 }
 
-interface attendance {
+export interface attendance {
     success: boolean;
-    results?: presentes[];
+    results?: presents[];
 };
 
 const getAttendance = ({
-    filePath,
-    buscar = 'presente',
-    horaInicio,
-    horaFinal,
-    limpiarNombre = true
+    text,
+    language = 'es',
+    searchFor = 'presente',
+    initalHour,
+    finalHour,
+    cleanName = true
 }: attParams): attendance => {
 
     let success = true;
-    let text: string;
-    try {
-        text = readFileSync(filePath, 'utf-8');
-    } catch (err) {
-        console.error(err.message);
-        success = false;
-        return { success };
-    }
-
-    const expression = `((?:\\d{2}:?){3})\\W(?:de)\\W*((?:.)+).*(?:a\\W+todos:).*\\W*(${buscar})`;
+    const { from, to, everyone } = languages[language];
+    const expression = `((?:\\d{2}:?){3})\\W(?:${from})\\W*((?:.)+).*(?:${to}\\W+${everyone}:).*\\W*(${searchFor})`;
     const zoomExp: RegExp = new RegExp(expression, 'gi');
 
     let matches = text.matchAll(zoomExp);
-    const presentes = [];
+    const presents = [];
 
     /*
         continue: saltea a la sig. iteración. Más info:
@@ -71,41 +69,41 @@ const getAttendance = ({
     */
     for (const match of matches) {
 
-        const hora = match[1];
+        const hour = match[1];
         const replaceSymbols = /[\d-_]/g;
-        if (limpiarNombre) {
+        if (cleanName) {
             match[2] = match[2].replaceAll(replaceSymbols, '');
         }
-        const nombre = match[2].trim();
-        const mensaje = match[3].trim();
+        const name = match[2].trim();
+        const message = match[3].trim();
 
-        if (horaInicio) {
+        if (initalHour) {
             // Caso: quiero los presentes desde las 10.
             // Si el mensaje fue enviado antes de las 10, no aceptar.
             // Ej. desde 10... | mensaje 9...
-            if (horaInicio > hora) continue;
+            if (initalHour > hour) continue;
         }
-        if (horaFinal) {
+        if (finalHour) {
             // Caso: quiero los presentes hasta las 10.
             // Si el mensaje fue enviado desde de las 10 inclusive, no aceptar.
             // Ej. (10(horaFinal) < 9(horaActual)) ? NoAceptar : aceptar. 
-            if (horaFinal <= hora) continue;
+            if (finalHour <= hour) continue;
         }
 
-        presentes.push({
-            hora,
-            nombre,
-            mensaje
+        presents.push({
+            hour,
+            name,
+            message
         });
 
     };
 
-    // No hubo match
-    if (presentes.length === 0) success = false;
+    // There wasn't any match.
+    if (presents.length === 0) success = false;
 
     return {
         success,
-        results: presentes
+        results: presents
     };
 };
 

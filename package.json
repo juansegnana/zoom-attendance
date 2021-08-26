@@ -1,8 +1,10 @@
 {
   "name": "zoom-attendance",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Zoom chat analysis, exporting assistance",
   "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "prepublish": "tsc",
   "scripts": {
     "dev": "ts-node src/main.ts",
     "build": "tsc",
@@ -11,7 +13,8 @@
   "keywords": [
     "attendance",
     "zoom",
-    "meeting"
+    "meeting",
+    "chat"
   ],
   "author": "Juan Segnana",
   "license": "ISC",

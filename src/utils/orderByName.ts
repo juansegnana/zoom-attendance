@@ -1,5 +1,5 @@
-import { presentes } from "./getAttendance";
+import { presents } from "./getAttendance";
 
-export default function orderByName (array: presentes[]):presentes[] {
-    return array.sort(({nombre:a},{nombre:b}) => { return a.localeCompare(b) });
+export default function orderByName (array: presents[]):presents[] {
+    return array.sort(({name:a},{name:b}) => { return a.localeCompare(b) });
 }
