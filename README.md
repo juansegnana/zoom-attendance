@@ -17,14 +17,20 @@ npm run start # compila a JS y ejecuta
 ```
 Importar `getAttendance` y pasar por parámetros:
 ```ts
-{
+// Modo 1
+import { getAttendance } from 'zoom-attendance';
+// Modo 2
+import zoomAtt from 'zoom-attendance';
+zoomAtt.getAttendance();
+// Parámetros:
+const { success, results } = getAttendance({
     text: string;                       // String del txt.
     language?: 'es' | 'en';             // Por defecto: es
     searchFor?: string;                 // Por defecto: presente
     initalHour?: allowedHours | false;  // Ej: 11:20:00
     finalHour?: allowedHours | false;   // Ej: 11:25:00
     cleanName?: boolean;                // Por defecto: true
-}
+});
 ```
 
 También se pueda usar `readTxt`, donde se pasa por parámetro la `ruta` del archivo y devuelve un string. En caso de que haya un error leyendo (como que no exista el archivo), devolverá un string vacío: `''`. 
