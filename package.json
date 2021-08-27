@@ -1,5 +1,5 @@
 {
-  "name": "@juansegnana/zoom-attendance",
+  "name": "zoom-attendance",
   "version": "0.2.0",
   "description": "Zoom chat analysis, exporting assistance",
   "main": "dist/main.js",
