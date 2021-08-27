@@ -1,5 +1,5 @@
 {
-  "name": "zoom-attendance",
+  "name": "@juansegnana/zoom-attendance",
   "version": "0.1.2",
   "description": "Zoom chat analysis, exporting assistance",
   "main": "dist/main.js",
@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "ts-node src/main.ts",
     "build": "tsc",
-    "start": "tsc && node dist/main.js"
+    "start": "tsc && node dist/main.js",
+    "test": "exit 0"
   },
   "keywords": [
     "attendance",

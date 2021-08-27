@@ -2,7 +2,10 @@ import { languages } from "./languages";
 
 type minutesAndSeconds = number;
 type hours = number;
-type allowedHours = `${hours}:${minutesAndSeconds}:${minutesAndSeconds}`;
+/**
+ * Time format allowed to search for.
+*/
+export type allowedHours = `${hours}:${minutesAndSeconds}:${minutesAndSeconds}`;
 
 /**
  * Receives an string (meant to be a Zoom Meeting chat), looks for
@@ -33,7 +36,7 @@ export interface attParams {
      * Delete numbers, dash and underscore. By default: true
     */
     cleanName?: boolean;
-};
+}
 
 export interface presents {
     hour: string;
@@ -44,7 +47,7 @@ export interface presents {
 export interface attendance {
     success: boolean;
     results?: presents[];
-};
+}
 
 const getAttendance = ({
     text,
@@ -57,7 +60,7 @@ const getAttendance = ({
 
     let success = true;
     const { from, to, everyone } = languages[language];
-    const expression = `((?:\\d{2}:?){3})\\W(?:${from})\\W*((?:.)+).*(?:${to}\\W+${everyone}:).*\\W*(${searchFor})`;
+    const expression = `((?:\\d{2}:?){3})\\W(?:${from})\\W*((?:.)+).*(?:${to}\\W+${everyone}:).*\\W*(.*${searchFor}.*)`;
     const zoomExp: RegExp = new RegExp(expression, 'gi');
 
     let matches = text.matchAll(zoomExp);
