@@ -1,3 +1,4 @@
+import cleanByString from "./cleanByString";
 import { languages } from "./languages";
 
 type minutesAndSeconds = number;
@@ -33,9 +34,13 @@ export interface attParams {
     */
     finalHour?: allowedHours | false;
     /**
-     * Delete numbers, dash and underscore. By default: true
+     * Delete dots, numbers, dash and underscore. By default: false
     */
     cleanName?: boolean;
+    /**
+     * Clean name by string given, it also accepts any regex symbol. Example: ['COM A', 'ISI A', 'ISI .']
+    */
+    cleanNameByString?: string[];
 }
 
 export interface presents {
@@ -46,7 +51,7 @@ export interface presents {
 
 export interface attendance {
     success: boolean;
-    results?: presents[];
+    results: presents[];
 }
 
 const getAttendance = ({
@@ -55,10 +60,13 @@ const getAttendance = ({
     searchFor = 'presente',
     initalHour,
     finalHour,
-    cleanName = true
+    cleanName = false,
+    cleanNameByString,
 }: attParams): attendance => {
 
     let success = true;
+    if (!text) return { success: false, results: [] };
+
     const { from, to, everyone } = languages[language];
     const expression = `((?:\\d{2}:?){3})\\W(?:${from})\\W*((?:.)+).*(?:${to}\\W+${everyone}:).*\\W*(.*${searchFor}.*)`;
     const zoomExp: RegExp = new RegExp(expression, 'gi');
@@ -73,11 +81,11 @@ const getAttendance = ({
     for (const match of matches) {
 
         const hour = match[1];
-        const replaceSymbols = /[\d-_]/g;
+        const replaceSymbols = /[\d-_\.]/g;
         if (cleanName) {
             match[2] = match[2].replaceAll(replaceSymbols, '');
         }
-        const name = match[2].trim();
+        let name = match[2].trim();
         const message = match[3].trim();
 
         if (initalHour) {
@@ -92,6 +100,9 @@ const getAttendance = ({
             // Ej. (10(horaFinal) < 9(horaActual)) ? NoAceptar : aceptar. 
             if (finalHour <= hour) continue;
         }
+        if (cleanNameByString) {
+            name = cleanByString(name, cleanNameByString);
+        }
 
         presents.push({
             hour,
@@ -101,7 +112,7 @@ const getAttendance = ({
 
     };
 
-    // There wasn't any match.
+    // There was no match
     if (presents.length === 0) success = false;
 
     return {
