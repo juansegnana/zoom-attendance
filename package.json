@@ -18,7 +18,7 @@
     "chat"
   ],
   "author": "Juan Segnana",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
@@ -34,6 +34,6 @@
   },
   "funding": {
     "type": "individual",
-    "url": "https://cafecito.app/juansegnana"
+    "url": "https://ko-fi.com/G2G65ZI2A"
   }
 }

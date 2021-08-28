@@ -6,19 +6,19 @@ Ideal para obtener una planilla de asistencia.
 
 ## Uso
 Instalar módulo con `npm`.
+
 ```bash
 npm install zoom-attendance
 ```
 
-Importar `getAttendance` y pasar por texto por parámetro:
+Importar `getAttendance` y pasar texto por parámetro:
 
 ```ts
 // Modo 1
 import { getAttendance, readTxt } from 'zoom-attendance';
-/* Modo 2
-    import zoomAtt from 'zoom-attendance';
-    zoomAtt.getAttendance();
-*/
+// Modo 2
+import zoomAtt from 'zoom-attendance';
+zoomAtt.getAttendance({ /* ... */ });
 
 // Leer txt
 const text = readTxt('path/to.txt');
@@ -30,7 +30,8 @@ const { success, results } = getAttendance({
     searchFor?: string;                 // Por defecto: presente
     initalHour?: allowedHours | false;  // Ej: 11:20:00
     finalHour?: allowedHours | false;   // Ej: 11:25:00
-    cleanName?: boolean;                // Por defecto: true
+    cleanName?: boolean;                // Por defecto: false
+    cleanNameByString?: string[];       // Ej: ['COM A','ISI..']
 });
 
 if (!success) {
@@ -39,7 +40,26 @@ if (!success) {
 console.log(results);
 ```
 
-También se pueda usar `readTxt`, donde se pasa por parámetro la `ruta` del archivo y devuelve un `string`. En caso de que haya un error leyendo (como que no exista el archivo), devolverá un string vacío: `''`.
+(!) Hay otro ejemplo de uso en el archivo `example.ts`.
+### Clean Name
+
+El parámetro opcional `cleanNameByString` es un array de strings, donde cada string puede tener símbolos de regex. Ejemplo:
+
+```ts
+// Con:
+cleanNameByString: ['ISI..', '2021'],
+// Borrará a: ISI A, ISI B, ISI-A, ISI-B, etc.
+```
+
+Se reemplaza lo matcheado con un espacio vacío. Más info de los símbolos regex:
+- [MDN Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet)
+- [regexr](http://regexr.com/) para testing. 
+
+También se puede usar como una función independiente, importando `cleanByString`.
+
+### Read text file
+
+Con la función `readTxt`, se pasa por parámetro la `ruta` del archivo y devuelve un `string`. En caso de que haya un error leyendo (como que no exista el archivo), devolverá un string vacío: `''`.
 
 ## Expresión regular
 
@@ -100,3 +120,5 @@ npm run start # compila a JS y ejecuta
 Si te resultó útil:
 
 [![Invitame un café en cafecito.app](https://cdn.cafecito.app/imgs/buttons/button_1.svg)](https://cafecito.app/juansegnana)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G65ZI2A)
