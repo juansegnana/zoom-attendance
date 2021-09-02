@@ -3,7 +3,7 @@ import getAttendance from "./getAttendance";
 import orderByName from "./orderByName";
 import readTxt from "./readTxt";
 
-export default {
+export =  {
     getAttendance,
     readTxt,
     orderByName,
