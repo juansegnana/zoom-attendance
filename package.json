@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "tsc && node dist/main.js",
     "test": "exit 0",
-    "prepublish": "npx tsc"
+    "prepare": "tsc"
   },
   "keywords": [
     "attendance",
@@ -20,6 +20,7 @@
   "author": "Juan Segnana",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^16.7.10",
     "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
   },
