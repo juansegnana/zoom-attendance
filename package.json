@@ -1,6 +1,6 @@
 {
   "name": "zoom-attendance",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Zoom chat analysis, exporting assistance",
   "main": "./dist/main.js",
   "module": "./dist/main.js",
