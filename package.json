@@ -2,14 +2,14 @@
   "name": "zoom-attendance",
   "version": "0.3.3",
   "description": "Zoom chat analysis, exporting assistance",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
-  "prepublish": "npx tsc",
+  "main": "./dist/main.js",
+  "module": "./dist/main.js",
   "scripts": {
     "dev": "ts-node src/main.ts",
     "build": "tsc",
     "start": "tsc && node dist/main.js",
-    "test": "exit 0"
+    "test": "exit 0",
+    "prepublish": "npx tsc"
   },
   "keywords": [
     "attendance",
@@ -35,5 +35,11 @@
   "funding": {
     "type": "individual",
     "url": "https://ko-fi.com/G2G65ZI2A"
-  }
+  },
+  "types": "dist/main.d.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ]
 }
